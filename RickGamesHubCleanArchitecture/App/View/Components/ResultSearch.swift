@@ -10,7 +10,7 @@ import SDWebImageSwiftUI
 
 struct ResultSearchView: View {
     
-    var game: Game
+    var game: GameModel
     
     var body: some View {
         HStack {

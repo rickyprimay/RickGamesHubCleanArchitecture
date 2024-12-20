@@ -9,7 +9,7 @@ import SwiftUI
 import SDWebImageSwiftUI
 
 struct GameCardView: View {
-    let game: Game
+    let game: GameModel
     @State private var isFavorite: Bool = false
     
     var body: some View {

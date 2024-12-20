@@ -10,6 +10,7 @@ import Combine
 protocol GameRepository {
     func fetchGames(page: Int, pageSize: Int) -> AnyPublisher<[GameModel], Error>
     func fetchGameDetails(gameID: Int) -> AnyPublisher<GameDetailModel, Error>
+    func fetchGameSearch(query: String) -> AnyPublisher<[GameModel], Error>
     
     func addFavorite(game: GameModel) -> AnyPublisher<Bool, Error>
     func removeFavorite(gameID: Int) -> AnyPublisher<Bool, Error>

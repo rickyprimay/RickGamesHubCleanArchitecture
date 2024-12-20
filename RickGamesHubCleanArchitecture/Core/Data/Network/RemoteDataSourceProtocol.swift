@@ -10,6 +10,7 @@ import Alamofire
 protocol RemoteDataSourceProtocol: AnyObject {
     func fetchGames(page: Int, pageSize: Int, completion: @escaping (Result<[GameModel], Error>) -> Void)
     func fetchGameDetails(gameID: Int, completion: @escaping (Result<GameDetailModel, Error>) -> Void)
+    func fetchGameSearch(query: String, completion: @escaping (Result<[GameModel], Error>) -> Void)
 }
 
 final class RemoteDataSource: NSObject {
@@ -20,11 +21,11 @@ final class RemoteDataSource: NSObject {
 
 extension RemoteDataSource: RemoteDataSourceProtocol {
     func fetchGames(page: Int, pageSize: Int, completion: @escaping (Result<[GameModel], Error>) -> Void) {
-        let url = NetworkConstants.baseUrl + "games"
+        let url = Network.baseUrl + "games"
         let parameters: [String: Any] = [
             "page": page,
             "page_size": pageSize,
-            "key": NetworkConstants.apiKey
+            "key": Network.apiKey
         ]
         
         AF.request(url, parameters: parameters)
@@ -41,9 +42,9 @@ extension RemoteDataSource: RemoteDataSourceProtocol {
     }
     
     func fetchGameDetails(gameID: Int, completion: @escaping (Result<GameDetailModel, Error>) -> Void) {
-        let url = NetworkConstants.baseUrl + "games/\(gameID)"
+        let url = Network.baseUrl + "games/\(gameID)"
         let parameters: [String: Any] = [
-            "key": NetworkConstants.apiKey
+            "key": Network.apiKey
         ]
         
         AF.request(url, parameters: parameters)
@@ -53,6 +54,26 @@ extension RemoteDataSource: RemoteDataSourceProtocol {
                 case .success(let gameDetail):
                     let gameDetailModel = GameDetailMapper.map(dto: gameDetail)
                     completion(.success(gameDetailModel))
+                case .failure(let error):
+                    completion(.failure(error))
+                }
+            }
+    }
+    
+    func fetchGameSearch(query: String, completion: @escaping (Result<[GameModel], Error>) -> Void) {
+        let url = Network.baseUrl + "games"
+        let parameters: [String: Any] = [
+            "search": query,
+            "key": Network.apiKey
+        ]
+        
+        AF.request(url, parameters: parameters)
+            .validate()
+            .responseDecodable(of: GameResult.self) { response in
+                switch response.result {
+                case .success(let gamesResponse):
+                    let gameModels = GameMapper.mapGameResponseToModel(response: gamesResponse.results)
+                    completion(.success(gameModels))
                 case .failure(let error):
                     completion(.failure(error))
                 }
