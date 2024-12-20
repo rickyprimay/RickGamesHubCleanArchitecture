@@ -13,7 +13,6 @@ struct GameCard: View {
     
     var body: some View {
         ZStack(alignment: .bottom) {
-            // Background image
             WebImage(url: game.backgroundImageURL)
                 .resizable()
                 .indicator(.activity)
@@ -21,16 +20,12 @@ struct GameCard: View {
                 .scaledToFill()
                 .frame(width: 340, height: 220)
                 .clipped()
-            
-            // Gradient overlay for better contrast
-            LinearGradient(
-                gradient: Gradient(colors: [Color.black.opacity(0.7), Color.clear]),
-                startPoint: .bottom,
-                endPoint: .center
-            )
-            .frame(height: 120)
-            .frame(maxWidth: .infinity)
-            .clipped()
+                .overlay(
+                    LinearGradient(gradient: Gradient(colors: [Color.black.opacity(0.9), Color.clear]),
+                                   startPoint: .bottom,
+                                   endPoint: .top)
+                    .cornerRadius(8)
+                )
             
             VStack(alignment: .leading, spacing: 8) {
                 HStack {
@@ -39,12 +34,11 @@ struct GameCard: View {
                         .font(.headline)
                         .lineLimit(2)
                         .frame(maxWidth: 250, alignment: .leading)
-                        .shadow(color: .black.opacity(0.7), radius: 3, x: 0, y: 2)  // Added shadow for better contrast
+                        .shadow(color: .black.opacity(0.8), radius: 3, x: 0, y: 2)
                     
                     Spacer()
                 }
                 
-                // Rating stars
                 HStack {
                     Text(String(format: "%.1f", game.rating))
                         .foregroundColor(.yellow)
@@ -66,7 +60,6 @@ struct GameCard: View {
                     Spacer()
                 }
                 
-                // Release date
                 Text("Release: \(game.released)")
                     .font(.caption)
                     .foregroundColor(.white.opacity(0.8))
