@@ -10,7 +10,7 @@ import Foundation
 final class AppInjection: NSObject {
     private let coreInjection: CoreInjection
     
-    init(coreInjection: CoreInjection) {
+    init(coreInjection: CoreInjection = CoreInjection()) {
         self.coreInjection = coreInjection
     }
     

@@ -21,7 +21,7 @@ final class LocalDataSource: NSObject {
     static let instance = LocalDataSource()
     
     private lazy var persistentContainer: NSPersistentContainer = {
-        let container = NSPersistentContainer(name: "RickGamesHubCleanArchitecture")
+        let container = NSPersistentContainer(name: "RickGamesHub")
         container.viewContext.automaticallyMergesChangesFromParent = true
         container.loadPersistentStores{_, error in
             if let error = error {

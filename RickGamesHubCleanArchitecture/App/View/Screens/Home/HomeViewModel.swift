@@ -46,6 +46,22 @@ class HomeViewModel: ObservableObject {
             .store(in: &cancellables)
     }
     
+    func fetchGameSearch(query: String) {
+        homeUseCase.fetchGameSearch(query: query)
+            .receive(on: DispatchQueue.main)
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .failure(let error):
+                    self.errorMessage = error.localizedDescription
+                case .finished:
+                    break
+                }
+            }, receiveValue: { games in
+                self.filteredGames = games
+            })
+            .store(in: &cancellables)
+    }
+    
     private func handleCompletion(isRecommended: Bool) -> (Subscribers.Completion<Error>) -> Void {
         return { completion in
             switch completion {

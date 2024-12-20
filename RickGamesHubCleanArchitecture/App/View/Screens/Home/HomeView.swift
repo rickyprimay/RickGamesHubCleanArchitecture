@@ -9,13 +9,8 @@ import SwiftUI
 
 struct HomeView: View {
     
-    @StateObject var vm: HomeViewModel
+    @StateObject var vm: HomeViewModel = HomeViewModel(homeUseCase: AppInjection.init().provideHomeUseCase())
     @State var searchText: String = ""
-    
-    init() {
-        let appInjection = AppInjection(coreInjection: CoreInjection())
-        _vm = StateObject(wrappedValue: HomeViewModel(homeUseCase: appInjection.provideHomeUseCase()))
-    }
     
     var body: some View {
         NavigationView {
@@ -25,7 +20,9 @@ struct HomeView: View {
                     SearchBar(searchText: $searchText)
                         .padding(.horizontal)
                         .onChange(of: searchText) {
-                            
+                            if searchText.count > 2 {
+                                vm.fetchGameSearch(query: searchText)
+                            }
                         }
                     
                     ScrollView {
@@ -46,7 +43,7 @@ struct HomeView: View {
                                             HStack {
                                                 ForEach(vm.games) { game in
                                                     NavigationLink {
-                                                        Text("detail")
+                                                        DetailGameView(game: game)
                                                     } label: {
                                                         GameCardView(game: game)
                                                     }
@@ -65,7 +62,7 @@ struct HomeView: View {
                                             HStack {
                                                 ForEach(vm.randomGames) { game in
                                                     NavigationLink {
-                                                        Text("Detail")
+                                                        DetailGameView(game: game)
                                                     } label: {
                                                         GameCardView(game: game)
                                                     }
@@ -85,7 +82,7 @@ struct HomeView: View {
                                     LazyVStack {
                                         ForEach(vm.filteredGames) { game in
                                             NavigationLink {
-                                                Text("detail")
+                                                DetailGameView(game: game)
                                             } label: {
                                                 ResultSearchView(game: game)
                                             }

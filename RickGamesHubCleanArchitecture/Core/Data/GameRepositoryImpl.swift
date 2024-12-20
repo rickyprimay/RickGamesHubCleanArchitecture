@@ -25,6 +25,19 @@ class GameRepositoryImpl {
 }
 
 extension GameRepositoryImpl: GameRepository {
+    func fetchGameSearch(query: String) -> AnyPublisher<[GameModel], any Error> {
+        return Future { promise in
+            self.remote.fetchGameSearch(query: query) { result in
+                switch result {
+                case .success(let games):
+                    promise(.success(games))
+                case .failure(let error):
+                    promise(.failure(error))
+                }
+            }
+        }
+        .eraseToAnyPublisher()
+    }
     
     func fetchGames(page: Int, pageSize: Int) -> AnyPublisher<[GameModel], Error> {
         return Future { promise in
