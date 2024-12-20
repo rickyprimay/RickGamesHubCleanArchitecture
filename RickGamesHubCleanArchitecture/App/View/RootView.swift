@@ -15,16 +15,25 @@ struct RootView: View {
                     Image(systemName: "house")
                     Text("Home")
                 }
-            Text("Favorites")
+                .toolbarBackground(
+                    Color.blue.opacity(0.2),
+                    for: .tabBar)
+            FavoritesView()
                 .tabItem{
                     Image(systemName: "star")
                     Text("Favorites")
                 }
+                .toolbarBackground(
+                    Color.blue.opacity(0.2),
+                    for: .tabBar)
             ProfileView()
                 .tabItem{
                     Image(systemName: "person")
                     Text("Profile")
                 }
+                .toolbarBackground(
+                    Color.blue.opacity(0.2),
+                    for: .tabBar)
         }
     }
 }

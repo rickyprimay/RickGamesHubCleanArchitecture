@@ -12,7 +12,14 @@ struct ProfileView: View {
     
     var body: some View {
         NavigationView {
-            ScrollView{
+            ZStack {
+                LinearGradient(
+                    gradient: Gradient(colors: [Color.blue.opacity(0.6), Color.blue.opacity(0.2)]),
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+                .edgesIgnoringSafeArea(.all)
+                
                 VStack {
                     VStack {
                         WebImage(url: URL(string: "https://media.licdn.com/dms/image/v2/D5603AQE4tfQC5I-oEA/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1731940782636?e=1740009600&v=beta&t=pxuyhc1aBMQh1OAeb9FpV1R9nyPW9qgggiSGSXi74Po"))
@@ -25,27 +32,29 @@ struct ProfileView: View {
                             .padding(.top, 30)
                     }
                     
-                    VStack(alignment: .leading, spacing: 15) {
-                        AboutMe()
+                    ScrollView{
+                        VStack(alignment: .leading, spacing: 15) {
+                            AboutMe()
+                        }
+                        .padding(.horizontal)
+                        .padding(.top, 20)
                     }
-                    .padding(.horizontal)
-                    .padding(.top, 20)
                     
                     Spacer()
                 }
-            }
-            
-            .navigationTitle("Profile")
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Link(destination: URL(string: "https://rickyprimay.me")!) {
-                        Image(systemName: "network")
-                            .font(.system(size: 20))
-                            .foregroundColor(.black)
-                            .frame(width: 50, height: 50)
-                            .background(.gray)
-                            .cornerRadius(10)
-                            .padding(.bottom)
+                
+                .navigationTitle("Profile")
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Link(destination: URL(string: "https://rickyprimay.me")!) {
+                            Image(systemName: "network")
+                                .font(.system(size: 20))
+                                .foregroundColor(.black)
+                                .frame(width: 50, height: 50)
+                                .background(.gray)
+                                .cornerRadius(10)
+                                .padding(.bottom)
+                        }
                     }
                 }
             }

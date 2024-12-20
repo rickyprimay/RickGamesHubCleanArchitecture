@@ -1,10 +1,3 @@
-//
-//  HomeView.swift
-//  RickGamesHubCleanArchitecture
-//
-//  Created by Ricky Primayuda Putra on 20/12/24.
-//
-
 import SwiftUI
 
 struct HomeView: View {
@@ -15,6 +8,13 @@ struct HomeView: View {
     var body: some View {
         NavigationView {
             ZStack {
+                LinearGradient(
+                    gradient: Gradient(colors: [Color.blue.opacity(0.6), Color.blue.opacity(0.2)]),
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+                .edgesIgnoringSafeArea(.all)
+                
                 VStack {
                     
                     SearchBar(searchText: $searchText)
@@ -26,65 +26,45 @@ struct HomeView: View {
                         }
                     
                     ScrollView {
-                        VStack(spacing: 10) {
+                        VStack(spacing: 20) {
                             if searchText.isEmpty {
                                 if vm.games.isEmpty {
-                                    ProgressView()
-                                        .progressViewStyle(CircularProgressViewStyle())
-                                        .padding(.top)
-                                    Text("Loading...")
+                                    VStack {
+                                        ProgressView()
+                                            .progressViewStyle(CircularProgressViewStyle())
+                                            .padding()
+                                        Text("Loading...")
+                                            .foregroundColor(.gray)
+                                    }
                                 } else {
-                                    VStack(alignment: .leading) {
-                                        Text("Best Game Ever")
-                                            .font(.title)
-                                            .foregroundColor(.black)
-                                            .fontWeight(.heavy)
-                                        ScrollView(.horizontal, showsIndicators: false) {
-                                            HStack {
-                                                ForEach(vm.games) { game in
-                                                    NavigationLink {
-                                                        DetailGameView(game: game)
-                                                    } label: {
-                                                        GameCardView(game: game)
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                    .padding()
+                                    SectionView(
+                                        title: "Best Game Ever",
+                                        games: vm.games
+                                    )
                                     
-                                    VStack(alignment: .leading) {
-                                        Text("Recommended For You")
-                                            .font(.title)
-                                            .foregroundColor(.black)
-                                            .fontWeight(.heavy)
-                                        ScrollView(.horizontal, showsIndicators: false) {
-                                            HStack {
-                                                ForEach(vm.randomGames) { game in
-                                                    NavigationLink {
-                                                        DetailGameView(game: game)
-                                                    } label: {
-                                                        GameCardView(game: game)
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                    .padding()
+                                    SectionView(
+                                        title: "Recommended For You",
+                                        games: vm.randomGames
+                                    )
                                 }
                             } else {
                                 if vm.filteredGames.isEmpty {
-                                    Text("No Results Found")
-                                        .foregroundColor(.gray)
-                                        .font(.title3)
-                                        .padding()
+                                    VStack {
+                                        Image(systemName: "magnifyingglass")
+                                            .font(.largeTitle)
+                                            .foregroundColor(.gray)
+                                        Text("No Results Found")
+                                            .foregroundColor(.gray)
+                                            .font(.title3)
+                                    }
+                                    .padding()
                                 } else {
                                     LazyVStack {
                                         ForEach(vm.filteredGames) { game in
                                             NavigationLink {
                                                 DetailGameView(game: game)
                                             } label: {
-                                                ResultSearchView(game: game)
+                                                ResultSearch(game: game)
                                             }
                                         }
                                     }

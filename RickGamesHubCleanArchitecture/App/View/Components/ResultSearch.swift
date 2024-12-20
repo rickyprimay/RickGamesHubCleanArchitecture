@@ -1,4 +1,3 @@
-//
 //  ResultSearch.swift
 //  RickGamesHubCleanArchitecture
 //
@@ -8,66 +7,65 @@
 import SwiftUI
 import SDWebImageSwiftUI
 
-struct ResultSearchView: View {
+struct ResultSearch: View {
     
     var game: GameModel
     
     var body: some View {
-        HStack {
+        HStack(spacing: 16) {
             WebImage(url: game.backgroundImageURL)
                 .resizable()
                 .indicator(.activity)
                 .transition(.fade(duration: 0.5))
                 .scaledToFill()
-                .frame(width: 80, height: 120)
-                .background(
-                    Rectangle()
-                        .fill(Color.gray.opacity(0.3))
-                        .frame(width: 80, height: 120)
-                )
-                .cornerRadius(10)
+                .frame(width: 100, height: 150)
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+                .shadow(radius: 6)
             
-            VStack(alignment: .leading) {
+            VStack(alignment: .leading, spacing: 8) {
                 Text(game.name)
                     .foregroundColor(.white)
-                    .multilineTextAlignment(.leading)
                     .font(.headline)
+                    .fontWeight(.semibold)
+                    .lineLimit(2)
                 
-                HStack {
-                    Text(String(format: "%.2f", game.rating))
-                            .foregroundColor(.white)
-                            .fontWeight(.heavy)
+                HStack(spacing: 4) {
+                    Text(String(format: "%.1f", game.rating))
+                        .foregroundColor(.yellow)
+                        .font(.subheadline)
+                        .fontWeight(.bold)
                     
-                    ForEach(0..<Int(game.rating), id: \.self) { _ in
-                        Image(systemName: "star.fill")
-                            .foregroundColor(.yellow)
+                    HStack(spacing: 2) {
+                        ForEach(0..<5) { index in
+                            if index < Int(game.rating) {
+                                Image(systemName: "star.fill")
+                                    .foregroundColor(.yellow)
+                            } else if index < Int(game.rating.rounded()) {
+                                Image(systemName: "star.lefthalf.fill")
+                                    .foregroundColor(.yellow)
+                            } else {
+                                Image(systemName: "star")
+                                    .foregroundColor(.yellow)
+                            }
+                        }
                     }
-                    
-                    if game.rating - floor(game.rating) >= 0.5 {
-                        Image(systemName: "star.lefthalf.fill")
-                            .foregroundColor(.yellow)
-                    }
-                    
-                    ForEach(0..<5 - Int(game.rating.rounded(.down)) - (game.rating - floor(game.rating) >= 0.5 ? 1 : 0), id: \.self) { _ in
-                        Image(systemName: "star")
-                            .foregroundColor(.yellow)
-                    }
-                    
-                    Spacer()
                 }
-                .foregroundColor(.yellow)
-                .fontWeight(.heavy)
                 
                 Text("Released: \(game.released)")
-                    .foregroundColor(.white)
-                    .font(.subheadline)
+                    .foregroundColor(.white.opacity(0.7))
+                    .font(.footnote)
             }
+            .padding(.vertical, 8)
+            
             Spacer()
         }
         .padding()
-        .background(.gray)
-        .cornerRadius(20)
+        .background(
+            RoundedRectangle(cornerRadius: 16)
+                .fill(LinearGradient(gradient: Gradient(colors: [Color.blue.opacity(0.7), Color.purple.opacity(0.9)]), startPoint: .top, endPoint: .bottom))
+                .shadow(color: .black.opacity(0.3), radius: 6, x: 0, y: 4)
+        )
         .padding(.horizontal)
+        .frame(height: 180)
     }
 }
-
