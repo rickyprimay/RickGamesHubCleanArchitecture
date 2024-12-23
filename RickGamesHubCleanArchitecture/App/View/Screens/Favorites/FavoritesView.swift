@@ -8,11 +8,11 @@ import SwiftUI
 import SDWebImageSwiftUI
 
 struct FavoritesView: View {
-    @StateObject private var vm: FavoritesViewModel = FavoritesViewModel(favoritesUseCase: AppInjection.init().provideFavoritesUseCase())
+    @EnvironmentObject var favoritesViewModel: FavoritesViewModel
     
     var body: some View {
         NavigationView {
-            ZStack{
+            ZStack {
                 LinearGradient(
                     gradient: Gradient(colors: [Color.blue.opacity(0.6), Color.blue.opacity(0.2)]),
                     startPoint: .top,
@@ -20,16 +20,17 @@ struct FavoritesView: View {
                 )
                 .edgesIgnoringSafeArea(.all)
                 
-                if !vm.favorites.isEmpty {
+                if !favoritesViewModel.favorites.isEmpty {
                     ScrollView {
                         LazyVStack {
-                            ForEach(vm.favorites, id: \.id) { game in
+                            ForEach(favoritesViewModel.favorites, id: \.id) { game in
                                 NavigationLink {
                                     let screenshots = game.screenshots.map { screenshot in
                                         Screenshot(image: screenshot.image)
                                     }
                                     
                                     DetailGameView(game: game)
+                                        .environmentObject(favoritesViewModel)
                                 } label: {
                                     ResultSearch(game: game)
                                 }
@@ -47,7 +48,7 @@ struct FavoritesView: View {
             }
         }
         .onAppear {
-            vm.getFavorites()
+            favoritesViewModel.getFavorites()
         }
     }
 }

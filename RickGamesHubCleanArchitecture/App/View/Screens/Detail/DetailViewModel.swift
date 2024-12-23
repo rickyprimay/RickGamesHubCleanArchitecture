@@ -11,7 +11,7 @@ import Combine
 class DetailViewModel: ObservableObject {
     
     @Published var favorites: [FavoritesGames] = []
-    @Published var gameDetail: GameDetailModel? = nil
+    @Published var gameDetail: GameDetailModel?
     @Published var isFavorites: Bool = false
     @Published var errorMessage: String = ""
     @Published var isLoading: Bool = false

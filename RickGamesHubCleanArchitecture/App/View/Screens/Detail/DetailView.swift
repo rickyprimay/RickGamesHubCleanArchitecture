@@ -10,7 +10,8 @@ import SDWebImageSwiftUI
 
 struct DetailGameView: View {
     let game: GameModel
-    @StateObject var vm: DetailViewModel = DetailViewModel(detailUseCase: AppInjection.init().provideDetailUseCase())
+    @StateObject var detailViewModel: DetailViewModel = DetailViewModel(detailUseCase: AppInjection.init().provideDetailUseCase())
+    @EnvironmentObject var favoritesViewModel: FavoritesViewModel
     let timer = Timer.publish(every: 3.0, on: .main, in: .common).autoconnect()
     @State private var currentImageIndex: Int = 1
     
@@ -37,7 +38,7 @@ struct DetailGameView: View {
                         
                         RatingInfo(game: game)
                         
-                        GameDescription(description: vm.gameDetail?.descriptionRaw ?? "Loading...")
+                        GameDescription(description: detailViewModel.gameDetail?.descriptionRaw ?? "Loading...")
                         
                         Spacer()
                     }
@@ -50,30 +51,30 @@ struct DetailGameView: View {
                 }
             }
             .onAppear {
-                vm.fetchGameDetail(gameID: game.id)
-                vm.checkFavorites(id: game.id)
+                detailViewModel.fetchGameDetail(gameID: game.id)
+                detailViewModel.checkFavorites(id: game.id)
             }
             .navigationBarTitle("Detail", displayMode: .inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    FavoriteButton(isFavorite: $vm.isFavorites) {
+                    FavoriteButton(isFavorite: $detailViewModel.isFavorites) {
                         toggleFavorite()
                     }
                 }
             }
-            .alert(isPresented: .constant(!vm.errorMessage.isEmpty)) {
-                Alert(title: Text("Error"), message: Text(vm.errorMessage), dismissButton: .default(Text("OK")))
+            .alert(isPresented: .constant(!detailViewModel.errorMessage.isEmpty)) {
+                Alert(title: Text("Error"), message: Text(detailViewModel.errorMessage), dismissButton: .default(Text("OK")))
             }
         }
     }
     
     func toggleFavorite() {
-        if vm.isFavorites {
-            if vm.gameDetail != nil {
-                vm.removeFavorite(gameID: game.id)
-            }
+        if detailViewModel.isFavorites {
+            detailViewModel.removeFavorite(gameID: game.id)
+            favoritesViewModel.getFavorites()
         } else {
-            vm.addFavorite(game: game)
+            detailViewModel.addFavorite(game: game)
+            favoritesViewModel.getFavorites()
         }
     }
 }

@@ -8,9 +8,13 @@
 import SwiftUI
 
 struct RootView: View {
+    
+    @StateObject private var favoritesViewModel: FavoritesViewModel = FavoritesViewModel(favoritesUseCase: AppInjection.init().provideFavoritesUseCase())
+    
     var body: some View {
         TabView {
             HomeView()
+            
                 .tabItem{
                     Image(systemName: "house")
                     Text("Home")
@@ -19,6 +23,7 @@ struct RootView: View {
                     Color.blue.opacity(0.2),
                     for: .tabBar)
             FavoritesView()
+                .environmentObject(favoritesViewModel)
                 .tabItem{
                     Image(systemName: "star")
                     Text("Favorites")

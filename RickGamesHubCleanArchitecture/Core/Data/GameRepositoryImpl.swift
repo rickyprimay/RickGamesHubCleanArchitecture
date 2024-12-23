@@ -111,7 +111,7 @@ extension GameRepositoryImpl: GameRepository {
     
     func getFavorites() -> AnyPublisher<[GameModel], Error> {
         return Future { promise in
-            self.local.getFavorites() { result in
+            self.local.getFavorites { result in
                 switch result {
                 case .success(let favorites):
                     promise(.success(favorites))

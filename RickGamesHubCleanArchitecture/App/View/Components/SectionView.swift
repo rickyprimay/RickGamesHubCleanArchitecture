@@ -11,6 +11,7 @@ struct SectionView: View {
     let title: String
     let games: [GameModel]
     @State private var animateCards: Bool = false
+    @EnvironmentObject var favoritesViewModel: FavoritesViewModel
 
     var body: some View {
         VStack(alignment: .leading) {
@@ -25,6 +26,7 @@ struct SectionView: View {
                     ForEach(games.indices, id: \.self) { index in
                         NavigationLink {
                             DetailGameView(game: games[index])
+                                .environmentObject(favoritesViewModel)
                         } label: {
                             GameCard(game: games[index])
                                 .frame(width: 300)

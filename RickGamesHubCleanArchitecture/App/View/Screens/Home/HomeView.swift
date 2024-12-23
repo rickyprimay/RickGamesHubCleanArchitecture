@@ -2,8 +2,9 @@ import SwiftUI
 
 struct HomeView: View {
     
-    @StateObject var vm: HomeViewModel = HomeViewModel(homeUseCase: AppInjection.init().provideHomeUseCase())
+    @StateObject var homeViewModel: HomeViewModel = HomeViewModel(homeUseCase: AppInjection.init().provideHomeUseCase())
     @State var searchText: String = ""
+    @EnvironmentObject var favoritesViewModel: FavoritesViewModel
     
     var body: some View {
         NavigationView {
@@ -21,14 +22,14 @@ struct HomeView: View {
                         .padding(.horizontal)
                         .onChange(of: searchText) {
                             if searchText.count > 2 {
-                                vm.fetchGameSearch(query: searchText)
+                                homeViewModel.fetchGameSearch(query: searchText)
                             }
                         }
                     
                     ScrollView {
                         VStack(spacing: 20) {
                             if searchText.isEmpty {
-                                if vm.games.isEmpty {
+                                if homeViewModel.games.isEmpty {
                                     VStack {
                                         ProgressView()
                                             .progressViewStyle(CircularProgressViewStyle())
@@ -39,16 +40,18 @@ struct HomeView: View {
                                 } else {
                                     SectionView(
                                         title: "Best Game Ever",
-                                        games: vm.games
+                                        games: homeViewModel.games
                                     )
+                                    .environmentObject(favoritesViewModel)
                                     
                                     SectionView(
                                         title: "Recommended For You",
-                                        games: vm.randomGames
+                                        games: homeViewModel.randomGames
                                     )
+                                    .environmentObject(favoritesViewModel)
                                 }
                             } else {
-                                if vm.filteredGames.isEmpty {
+                                if homeViewModel.filteredGames.isEmpty {
                                     VStack {
                                         Image(systemName: "magnifyingglass")
                                             .font(.largeTitle)
@@ -60,9 +63,10 @@ struct HomeView: View {
                                     .padding()
                                 } else {
                                     LazyVStack {
-                                        ForEach(vm.filteredGames) { game in
+                                        ForEach(homeViewModel.filteredGames) { game in
                                             NavigationLink {
                                                 DetailGameView(game: game)
+                                                    .environmentObject(favoritesViewModel)
                                             } label: {
                                                 ResultSearch(game: game)
                                             }

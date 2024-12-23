@@ -53,8 +53,11 @@ extension LocalDataSource: LocalDataSourceProtocol {
     }
     
     func saveContext() throws {
-        if context.hasChanges {
+        do {
             try context.save()
+        } catch {
+            print("Error saving data: \(error.localizedDescription)")
+            throw error
         }
     }
     
@@ -81,6 +84,7 @@ extension LocalDataSource: LocalDataSourceProtocol {
 
         do {
             try saveContext()
+            getFavorites { _ in }
             completion(.success(()))
         } catch {
             completion(.failure(error))
@@ -95,6 +99,7 @@ extension LocalDataSource: LocalDataSourceProtocol {
             let items = try context.fetch(fetchRequest)
             items.forEach { context.delete($0) }
             try saveContext()
+            getFavorites { _ in }
             completion(.success(()))
         } catch {
             completion(.failure(error))
